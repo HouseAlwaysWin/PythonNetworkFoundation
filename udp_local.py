@@ -14,9 +14,9 @@ def server(ip,port):
         data = text.encode('utf-8')
         sock.sendto(data, address)
 
-def client(ip,port):
+def client(ip,port,words):
     sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-    text = 'The time is {0}'.format(datetime.now())
+    text = 'The time is {0},I would like to say:{1}'.format(datetime.now(),words)
     data = text.encode('utf-8')
     sock.sendto(data,(ip,port))
     print('The OS assigned me the address {}'.format(sock.getsockname()))
@@ -30,7 +30,10 @@ if __name__ == '__main__':
     parser.add_argument('role', choices=choices, help='which role to play')
     parser.add_argument('-p', metavar='port',type=int,default=1060,help='UDP Port (default 1060)')
     parser.add_argument('-i',metavar='ip',type=str,default='127.0.0.1')
+    parser.add_argument('-w',metavar='say words',type=str,default='hello')
     args = parser.parse_args()
     function = choices[args.role]
-    function(args.i,args.p)
-
+    if args.role == 'server':
+        function(args.i,args.p)
+    else:
+        function(args.i,args.p,args.w)
