@@ -6,9 +6,9 @@ def recvall(sock, length):
     data = b''
     while len(data) < length:
         more = sock.recv(length - len(data))
+        print(more)
         if not more:
-            raise EOFError('was expecting %d bytes but only recived'
-                           ' %d bytes before the socket closed' % (length, len(data)))
+            raise EOFError('was expecting %d bytes but only recived %d bytes before the socket closed' % (length, len(data)))
         data += more
     return data
 
@@ -31,14 +31,13 @@ def server(interface, port):
         sc.close()
         print(' Reply sent, socket closed')
 
-
 def client(host, port):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect((host, port))
     print('Client has been assigned socket name', sock.getsockname())
+    sock.sendall(b'Hi there, server')
     reply = recvall(sock, 16)
     print('The server said', repr(reply))
-    sock.sendall(b'Hi there server')
     sock.close()
 
 
